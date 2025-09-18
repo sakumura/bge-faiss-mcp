@@ -31,6 +31,7 @@ dependencies = [
     "sentence-transformers>=5.1.0",
     "faiss-cpu>=1.8.0",
     "torch>=2.2.0",
+    "torchvision>=0.17.0",
     "transformers>=4.45.0",
     "numpy>=1.26.0",
     "python-dotenv>=1.1.0",
@@ -88,3 +89,15 @@ addopts = [
     "--cov-report=term-missing",
     "--cov-report=html",
 ]
+
+[tool.uv]
+find-links = ["https://download.pytorch.org/whl/cu121"]
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu121" }
+torchvision = { index = "pytorch-cu121" }
+torchaudio = { index = "pytorch-cu121" }
+
+[[tool.uv.index]]
+name = "pytorch-cu121"
+url = "https://download.pytorch.org/whl/cu121"
