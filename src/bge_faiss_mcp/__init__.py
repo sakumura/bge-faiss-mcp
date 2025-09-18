@@ -5,7 +5,7 @@ A high-performance semantic search server using BGE-M3 embeddings and FAISS vect
 Provides fast, accurate semantic search capabilities through Model Context Protocol.
 """
 
-__version__ = "1.0.6"
+__version__ = "1.0.7"
 __author__ = "AI Dev Companion Project"
 __email__ = "your-email@example.com"
 

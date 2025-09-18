@@ -15,7 +15,7 @@
 
 ## 📦 インストール
 
-### uvx実行（推奨）
+### uvx実行
 Python環境の構築不要で直接実行できます：
 
 ```bash
@@ -35,15 +35,6 @@ uvx --from git+https://github.com/sakumura/bge-faiss-mcp bge-faiss-mcp
 uvx --refresh --from git+https://github.com/sakumura/bge-faiss-mcp bge-faiss-mcp
 ```
 
-### 従来方式（pip）
-```bash
-# GitHubから直接インストール
-pip install git+https://github.com/sakumura/bge-faiss-mcp.git
-
-# または uvを使用
-uv pip install git+https://github.com/sakumura/bge-faiss-mcp.git
-```
-
 > **詳細**: [uvxインストール方法](docs/uvx-installation.md)を参照
 
 ## 🚀 クイックスタート
@@ -52,7 +43,7 @@ uv pip install git+https://github.com/sakumura/bge-faiss-mcp.git
 
 `.mcp.json`に以下を追加:
 
-#### uvx使用時（推奨）
+#### uvx使用時
 ```json
 {
   "mcpServers": {
@@ -63,20 +54,6 @@ uv pip install git+https://github.com/sakumura/bge-faiss-mcp.git
         "--from", "git+https://github.com/sakumura/bge-faiss-mcp",
         "bge-faiss-mcp"
       ]
-    }
-  }
-}
-```
-
-#### pip使用時
-```json
-{
-  "mcpServers": {
-    "bge-faiss-search": {
-      "type": "stdio",
-      "command": "python",
-      "args": ["-m", "bge_faiss_mcp.server"],
-      "cwd": "."
     }
   }
 }
@@ -107,12 +84,7 @@ search(query, k=5, mode="auto")
 
 ## 📋 必要環境
 
-### uvx使用時
 - [uv](https://docs.astral.sh/uv/)がインストール済み
-- Python 3.10～3.12（3.13は未対応）
-- 4GB以上のRAM（推奨: 8GB以上）
-
-### pip使用時
 - Python 3.10～3.12（3.13は未対応）
 - 4GB以上のRAM（推奨: 8GB以上）
 
@@ -135,17 +107,6 @@ BGE_FAISS_DEVICE=gpu uvx --from git+https://github.com/sakumura/bge-faiss-mcp bg
 
 # CPU強制使用
 BGE_FAISS_DEVICE=cpu uvx --from git+https://github.com/sakumura/bge-faiss-mcp bge-faiss-mcp
-```
-
-### GPU版のインストール（pip使用時）
-GPU高速化を利用する場合:
-```bash
-# CUDA 11.8の場合
-pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
-pip install faiss-gpu
-
-# または
-pip install git+https://github.com/sakumura/bge-faiss-mcp.git[gpu]
 ```
 
 ## 📚 ドキュメント

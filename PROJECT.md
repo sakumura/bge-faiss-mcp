@@ -44,6 +44,14 @@ bge-faiss-mcp/
 - **MCP**: 1.12.0+
 - **FAISS**: faiss-cpu（全プラットフォーム）、オプションでfaiss-gpu
 
+### GPU利用に関する設計方針
+- **FAISS**: CPU版（faiss-cpu）を使用（全プラットフォーム共通）
+  - 理由：FAISSのGPU版は必須ではなく、CPU版で十分な性能を発揮
+  - インデックス検索は十分高速でGPU不要
+- **PyTorch（BGE-M3埋め込み）**: GPU版を使用（CUDA利用可能時）
+  - 埋め込み生成処理でGPUの恩恵が大きい
+  - uvx経由でプラットフォーム別に自動選択（Windows/Linux: CUDA 11.8, macOS: CPU）
+
 ## 🚨 重要：uvx互換性問題と解決策
 
 ### 問題の概要
