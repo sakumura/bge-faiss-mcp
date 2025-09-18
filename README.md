@@ -11,6 +11,7 @@
 - **🔍 ハイブリッド検索**: セマンティック/パターン検索の自動切り替え
 - **🔧 MCP統合**: Claude Codeとシームレスに連携
 - **🚀 GPU高速化**: RTX 4060 Ti等で10-100倍の高速化
+- **📦 uvx対応**: Python環境構築不要でワンコマンド実行
 
 ## 📦 インストール
 
@@ -20,6 +21,18 @@ Python環境の構築不要で直接実行できます：
 ```bash
 # GitHub経由で直接実行
 uvx --from git+https://github.com/sakumura/bge-faiss-mcp bge-faiss-mcp
+```
+
+#### アップデート方法
+uvxのキャッシュをクリアして最新版を取得：
+
+```bash
+# キャッシュをクリアして再インストール
+uv tool uninstall bge-faiss-mcp
+uvx --from git+https://github.com/sakumura/bge-faiss-mcp bge-faiss-mcp
+
+# または、強制的に最新版を取得
+uvx --refresh --from git+https://github.com/sakumura/bge-faiss-mcp bge-faiss-mcp
 ```
 
 ### 従来方式（pip）
@@ -96,11 +109,14 @@ search(query, k=5, mode="auto")
 
 ### uvx使用時
 - [uv](https://docs.astral.sh/uv/)がインストール済み
+- Python 3.10～3.12（3.13は未対応）
 - 4GB以上のRAM（推奨: 8GB以上）
 
 ### pip使用時
-- Python 3.10以上
+- Python 3.10～3.12（3.13は未対応）
 - 4GB以上のRAM（推奨: 8GB以上）
+
+> ⚠️ **注意**: Python 3.13はPyTorchの互換性制限により現在未対応です
 
 ## 🎮 GPU設定
 
