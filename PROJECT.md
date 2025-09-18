@@ -12,7 +12,7 @@
 
 ### パッケージ情報
 - **パッケージ名**: `bge-faiss-mcp`
-- **現在バージョン**: 1.0.6
+- **現在バージョン**: 1.0.8
 - **PyPI公開**: 準備中
 - **GitHub**: https://github.com/sakumura/bge-faiss-mcp
 
@@ -54,40 +54,45 @@ bge-faiss-mcp/
 
 ## 🚨 重要：uvx互換性問題と解決策
 
-### 問題の概要
-**uvx経由でのインストールが失敗する重大な問題が存在**
+### 問題の概要と解決の経緯
 
-#### 根本原因
+#### v1.0.4～v1.0.5の問題
 - PyTorchのCUDA版がPython 3.13に対応していない
-- uvxのデフォルト環境がPython 3.13を使用
 - 直接的なPyTorch依存関係指定により、バージョン解決が失敗
 
-#### 失敗した対策（v1.0.4～v1.0.5）
-1. **CUDA 12.1版への移行** → Python 3.13非対応で失敗
-2. **tool.uv.indexでの指定** → 直接依存関係との競合で失敗
-3. **faiss-gpu/cpu の条件分岐** → PyTorch問題は未解決
+#### v1.0.6の解決策
+- dependenciesからtorch/torchvisionを除外
+- tool.uv.sourcesで管理するも、uvx版でCPU版のみインストールされる問題
 
-#### 最新の解決策（v1.0.6）
-**プラットフォーム別条件付き依存関係管理**に変更：
+#### v1.0.7の解決策
+- CI互換性のため、torch/torchvisionをdependenciesに戻す
+- tool.uv.sourcesをコメントアウト
+- GitHub Actions CI成功、但しuvx版はCPU版PyTorch使用
+
+#### v1.0.8の最終解決策（完全動作確認済み）
+**プラットフォーム別PyTorch選択を完全実装**：
 
 ```toml
-# dependenciesからtorch/torchvisionを除外
 dependencies = [
-    # PyTorch関連を削除、tool.uv.sourcesで管理
+    "torch>=2.2.0",
+    "torchvision>=0.17.0",
+    # 他の依存関係
 ]
 
 [tool.uv.sources]
 torch = [
-    { index = "pytorch-cu118", marker = "sys_platform == 'win32'" },
-    { index = "pytorch-cpu", marker = "sys_platform == 'darwin'" },
-    { index = "pytorch-cu118", marker = "sys_platform == 'linux'" },
+    { index = "pytorch-cu118", marker = "sys_platform == 'win32'" },    # Windows: CUDA 11.8
+    { index = "pytorch-cpu", marker = "sys_platform == 'darwin'" },     # macOS: CPU only
+    { index = "pytorch-cpu", marker = "sys_platform == 'linux'" },      # Linux: CI互換性のためCPU
 ]
 ```
 
-**効果**：
-- uvxインストール時にプラットフォーム別の適切なPyTorchを自動選択
-- Python 3.10～3.12での動作を保証（3.13は明示的に除外）
-- GPU/CPU自動フォールバック機能を維持
+**成果**：
+- ✅ Windows uvx版: torch==2.7.1+cu118（GPU対応）**【ユーザーテスト合格 2025-01-18】**
+- ✅ Linux CI: CPU版でテスト成功
+- ✅ macOS: CPU版（MPS経由）
+- ✅ GitHub Actions CI: 全テスト合格
+- ✅ **uvx版GPU動作: 完全動作確認済み**
 
 ## 現在の進行状況
 
@@ -101,6 +106,8 @@ torch = [
 - [x] uvx版でのGPU/CPU自動選択機能実装
 - [x] clear_index のファイルロック問題修正
 - [x] uvx互換性問題の解決（v1.0.6: 条件付き依存関係管理）
+- [x] **v1.0.7**: CI問題修正（markupsafe互換性）
+- [x] **v1.0.8**: uvx版GPU対応実装（Windows: CUDA 11.8）✅ユーザーテスト合格
 
 ### 🚧 進行中タスク
 - [ ] PyPIへの公開準備
@@ -231,4 +238,5 @@ MIT License - 詳細は[LICENSE](LICENSE)ファイルを参照
 ---
 
 **最終更新**: 2025-01-18
+**バージョン**: 1.0.8（GPU対応完了・ユーザーテスト合格）
 **作成元**: HANDOVER.mdから統合・更新
