@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "bge-faiss-mcp"
-version = "1.0.4"
+version = "1.0.5"
 description = "High-performance semantic search MCP server using BGE-M3 embeddings and FAISS vector store"
 authors = [
     {name = "AI Dev Companion Project", email = "your-email@example.com"}
