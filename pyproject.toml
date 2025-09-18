@@ -4,14 +4,14 @@ build-backend = "hatchling.build"
 
 [project]
 name = "bge-faiss-mcp"
-version = "1.0.5"
+version = "1.0.6"
 description = "High-performance semantic search MCP server using BGE-M3 embeddings and FAISS vector store"
 authors = [
     {name = "AI Dev Companion Project", email = "your-email@example.com"}
 ]
 readme = "README.md"
 license = {text = "MIT"}
-requires-python = ">=3.10"
+requires-python = ">=3.10,<3.13"
 keywords = ["mcp", "semantic-search", "bge", "faiss", "embeddings", "vector-search"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -30,13 +30,12 @@ dependencies = [
     "mcp>=1.12.0",
     "sentence-transformers>=5.1.0",
     "faiss-cpu>=1.8.0",
-    "torch>=2.2.0",
-    "torchvision>=0.17.0",
     "transformers>=4.45.0",
     "numpy>=1.26.0",
     "python-dotenv>=1.1.0",
     "pydantic>=2.11.0",
     "psutil>=5.9.0",
+    # torch and torchvision are managed by tool.uv.sources for platform-specific selection
 ]
 
 [project.optional-dependencies]
@@ -90,14 +89,26 @@ addopts = [
     "--cov-report=html",
 ]
 
-[tool.uv]
-find-links = ["https://download.pytorch.org/whl/cu121"]
-
+# Platform-specific PyTorch selection
 [tool.uv.sources]
-torch = { index = "pytorch-cu121" }
-torchvision = { index = "pytorch-cu121" }
-torchaudio = { index = "pytorch-cu121" }
+torch = [
+    { index = "pytorch-cu118", marker = "sys_platform == 'win32'" },    # Windows: CUDA 11.8
+    { index = "pytorch-cpu", marker = "sys_platform == 'darwin'" },     # macOS: CPU only (MPS via CPU build)
+    { index = "pytorch-cu118", marker = "sys_platform == 'linux'" },    # Linux: CUDA 11.8
+]
+torchvision = [
+    { index = "pytorch-cu118", marker = "sys_platform == 'win32'" },    # Windows: CUDA 11.8
+    { index = "pytorch-cpu", marker = "sys_platform == 'darwin'" },     # macOS: CPU only
+    { index = "pytorch-cu118", marker = "sys_platform == 'linux'" },    # Linux: CUDA 11.8
+]
+
+# PyTorch index definitions
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
 
 [[tool.uv.index]]
-name = "pytorch-cu121"
-url = "https://download.pytorch.org/whl/cu121"
+name = "pytorch-cu118"
+url = "https://download.pytorch.org/whl/cu118"
+explicit = true
