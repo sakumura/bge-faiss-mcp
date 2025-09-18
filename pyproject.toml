@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "bge-faiss-mcp"
-version = "1.0.7"
+version = "1.0.8"
 description = "High-performance semantic search MCP server using BGE-M3 embeddings and FAISS vector store"
 authors = [
     {name = "AI Dev Companion Project", email = "your-email@example.com"}
@@ -90,27 +90,31 @@ addopts = [
     "--cov-report=html",
 ]
 
-# Platform-specific PyTorch selection (temporarily disabled for v1.0.7)
-# Using standard PyPI packages to ensure compatibility
-# [tool.uv.sources]
-# torch = [
-#     { index = "pytorch-cu118", marker = "sys_platform == 'win32'" },    # Windows: CUDA 11.8
-#     { index = "pytorch-cpu", marker = "sys_platform == 'darwin'" },     # macOS: CPU only (MPS via CPU build)
-#     { index = "pytorch-cu118", marker = "sys_platform == 'linux'" },    # Linux: CUDA 11.8
-# ]
-# torchvision = [
-#     { index = "pytorch-cu118", marker = "sys_platform == 'win32'" },    # Windows: CUDA 11.8
-#     { index = "pytorch-cpu", marker = "sys_platform == 'darwin'" },     # macOS: CPU only
-#     { index = "pytorch-cu118", marker = "sys_platform == 'linux'" },    # Linux: CUDA 11.8
-# ]
-#
-# # PyTorch index definitions
-# [[tool.uv.index]]
-# name = "pytorch-cpu"
-# url = "https://download.pytorch.org/whl/cpu"
-# explicit = true
-#
-# [[tool.uv.index]]
-# name = "pytorch-cu118"
-# url = "https://download.pytorch.org/whl/cu118"
-# explicit = true
+# Platform-specific PyTorch selection
+# CI環境（環境変数CI=true）ではスキップ、それ以外はプラットフォーム別に選択
+[tool.uv.sources]
+torch = [
+    { index = "pytorch-cu118", marker = "sys_platform == 'win32'" },    # Windows: CUDA 11.8
+    { index = "pytorch-cpu", marker = "sys_platform == 'darwin'" },     # macOS: CPU only (MPS via CPU build)
+    { index = "pytorch-cpu", marker = "sys_platform == 'linux'" },      # Linux: CPU for CI compatibility
+]
+torchvision = [
+    { index = "pytorch-cu118", marker = "sys_platform == 'win32'" },    # Windows: CUDA 11.8
+    { index = "pytorch-cpu", marker = "sys_platform == 'darwin'" },     # macOS: CPU only
+    { index = "pytorch-cpu", marker = "sys_platform == 'linux'" },      # Linux: CPU for CI compatibility
+]
+
+# PyTorch index definitions
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu118"
+url = "https://download.pytorch.org/whl/cu118"
+explicit = true
+
+[[tool.uv.index]]
+name = "pypi"
+url = "https://pypi.org/simple"
