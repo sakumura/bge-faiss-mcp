@@ -30,9 +30,11 @@ jobs:
       run: uv venv
     
     - name: Install dependencies
+      env:
+        CI: true  # CI環境変数を設定してCPU版PyTorchを使用
       run: |
         # CI環境では基本依存関係のみインストール（GPUパッケージを避ける）
-        uv pip install -e . 
+        uv pip install -e .
         uv pip install pytest pytest-asyncio pytest-cov black flake8 mypy types-psutil
     
     - name: Run type checking with mypy (relaxed)
